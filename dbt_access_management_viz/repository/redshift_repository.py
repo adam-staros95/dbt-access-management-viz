@@ -1,20 +1,20 @@
-from typing import Dict, List
+from typing import Dict
 
 import boto3
-import redshift_connector
 import pandas as pd
+import redshift_connector
 
 
 class RedshiftRepository:
     def __init__(self, secret_name: str, region_name: str = "us-west-2"):
         self.secret_name = secret_name
         self.region_name = region_name
-        self.client = boto3.client('secretsmanager', region_name=self.region_name)
+        self.client = boto3.client("secretsmanager", region_name=self.region_name)
 
     def _get_secret(self) -> Dict:
         try:
             secret_value = self.client.get_secret_value(SecretId=self.secret_name)
-            return eval(secret_value['SecretString'])
+            return eval(secret_value["SecretString"])
         except Exception as e:
             raise Exception(f"Error getting secret: {str(e)}")
 
@@ -22,10 +22,10 @@ class RedshiftRepository:
         secret = self._get_secret()
         try:
             conn = redshift_connector.connect(
-                host=secret['host'],
-                database=secret['dbname'],
-                user=secret['username'],
-                password=secret['password']
+                host=secret["host"],
+                database=secret["dbname"],
+                user=secret["username"],
+                password=secret["password"],
             )
             cursor = conn.cursor()
             cursor.execute(query)
@@ -33,5 +33,5 @@ class RedshiftRepository:
         except Exception as e:
             raise Exception(f"Error querying Redshift: {str(e)}")
         finally:
-            if 'conn' in locals():
+            if "conn" in locals():
                 conn.close()
