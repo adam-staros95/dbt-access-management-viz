@@ -2,7 +2,7 @@
 name = "dbt-access-management-viz"
 version = "0.1.0"
 description = ""
-authors = ["astaros <Astaros@trueblue.com>"]
+authors = ["Adam Staros <staros.adam@gmail.com>"]
 readme = "README.md"
 packages = [{ include = "dbt_access_management_viz" }]
 
