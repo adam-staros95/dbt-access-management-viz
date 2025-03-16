@@ -25,3 +25,4 @@ reports/sources/*.csv
 .DS_Store
 .ruff_cache
 /profiles.yml
+/run_local.sh

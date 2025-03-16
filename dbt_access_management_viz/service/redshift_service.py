@@ -9,7 +9,7 @@ class RedshiftService:
     def __init__(self, redshift_repository: RedshiftRepository):
         self._redshift_repository = redshift_repository
 
-    def get_permissions_tables(
+    def _get_permissions_tables(
         self, dbt_access_management_schema_name: str = "access_management"
     ) -> pd.DataFrame:
         return self._redshift_repository.query(
@@ -25,7 +25,7 @@ class RedshiftService:
     def get_all_identities(
         self, dbt_access_management_schema_name: str = "access_management"
     ) -> pd.DataFrame:
-        all_permissions_tables = self.get_permissions_tables(
+        all_permissions_tables = self._get_permissions_tables(
             dbt_access_management_schema_name
         )
         queries = []
@@ -41,7 +41,7 @@ class RedshiftService:
         identity_name: str,
         dbt_access_management_schema_name: str = "access_management",
     ) -> pd.DataFrame:
-        all_permissions_tables = self.get_permissions_tables(
+        all_permissions_tables = self._get_permissions_tables(
             dbt_access_management_schema_name
         )
         queries = []
@@ -56,6 +56,45 @@ class RedshiftService:
                     FROM {row['table_schema']}.{row['table_name']} WHERE identity_name = '{identity_name}'"""
             )
         query = "\nUNION\n".join(queries)
+        return self._redshift_repository.query(query)
+
+    def get_all_configured_models(
+        self,
+        dbt_access_management_schema_name: str = "access_management",
+    ) -> pd.DataFrame:
+        all_permissions_tables = self._get_permissions_tables(
+            dbt_access_management_schema_name
+        )
+        queries = []
+        for _, row in all_permissions_tables.iterrows():
+            queries.append(
+                f"""SELECT
+                        schema_name,
+                        model_name,
+                        materialization
+                    FROM {row['table_schema']}.{row['table_name']}"""
+            )
+        query = "\nUNION\n".join(queries)
+        query = query + "\nORDER BY schema_name, model_name\n"
+        return self._redshift_repository.query(query)
+
+    def get_identity_assigned_to_model(
+        self,
+        model_name: str,
+        dbt_access_management_schema_name: str = "access_management",
+    ) -> pd.DataFrame:
+        all_permissions_tables = self._get_permissions_tables(
+            dbt_access_management_schema_name
+        )
+        queries = []
+        for _, row in all_permissions_tables.iterrows():
+            queries.append(
+                f"""SELECT
+                        identity_name
+                    FROM {row['table_schema']}.{row['table_name']} WHERE model_name = '{model_name}'"""
+            )
+        query = "\nUNION\n".join(queries)
+        query = query + "\nORDER BY identity_name\n"
         return self._redshift_repository.query(query)
 
 
