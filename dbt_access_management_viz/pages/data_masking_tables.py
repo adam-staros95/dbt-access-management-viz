@@ -1,6 +1,6 @@
 import streamlit as st
 
-from dbt_access_management_viz.service.redshift_data_masking_service import (
+from dbt_access_management_viz.service.data_masking_service import (
     get_redshift_service,
 )
 

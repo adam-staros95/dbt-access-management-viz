@@ -5,7 +5,7 @@ import pandas as pd
 from dbt_access_management_viz.repository.redshift_repository import RedshiftRepository
 
 
-class RedshiftService:
+class DataMaskingService:
     def __init__(self, redshift_repository: RedshiftRepository):
         self._redshift_repository = redshift_repository
 
@@ -43,6 +43,6 @@ class RedshiftService:
         return self._redshift_repository.query(query)
 
 
-def get_redshift_service() -> RedshiftService:
+def get_redshift_service() -> DataMaskingService:
     redshift_repository = RedshiftRepository(secret_name=os.environ["SECRET_NAME"])
-    return RedshiftService(redshift_repository=redshift_repository)
+    return DataMaskingService(redshift_repository=redshift_repository)

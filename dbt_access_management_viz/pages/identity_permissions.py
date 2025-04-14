@@ -1,6 +1,6 @@
 import streamlit as st
 
-from dbt_access_management_viz.service.redshift_permissions_service import (
+from dbt_access_management_viz.service.permissions_service import (
     get_redshift_service,
 )
 
