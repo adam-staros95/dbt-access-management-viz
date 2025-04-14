@@ -1,18 +1,18 @@
 import streamlit as st
 
-from dbt_access_management_viz.service.redshift_permissions_service import (
+from dbt_access_management_viz.service.redshift_data_masking_service import (
     get_redshift_service,
 )
 
 
 redshift_service = get_redshift_service()
 
-st.write("List of tables with configured permissions:")
-permission_tables = redshift_service.get_all_configured_models()
+st.write("List of all masked columns:")
+permission_tables = redshift_service.get_all_masked_columns()
 st.dataframe(data=permission_tables)
 
 model_name = st.selectbox(
-    "Select model to get information which identity grants access to it",
+    "Select n model to get information which identity grants access to it",
     options=[""] + list(permission_tables["model_name"]),
 )
 

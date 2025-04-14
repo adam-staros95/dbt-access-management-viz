@@ -90,7 +90,8 @@ class RedshiftService:
         for _, row in all_permissions_tables.iterrows():
             queries.append(
                 f"""SELECT
-                        identity_name
+                        identity_name,
+                        identity_type
                     FROM {row['table_schema']}.{row['table_name']} WHERE model_name = '{model_name}'"""
             )
         query = "\nUNION\n".join(queries)
